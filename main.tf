@@ -35,13 +35,10 @@ module "api" {
   hcaptcha_secret    = var.hcaptcha_secret
   tls                = var.tls
   cloudflare         = var.cloudflare
+  grpc               = var.grpc
+  object_storage     = var.object_storage
+  replica_count      = var.api.replica_count
   access_control_allow_origin = var.api.access_control_allow_origin
-  grpc               = {
-    host = "casty-grpc.casty-grpc.svc.cluster.local"
-    port = 55283
-  }
-  object_storage = var.object_storage
-  replica_count  = var.api.replica_count
   depends_on     = [module.grpc]
 }
 
