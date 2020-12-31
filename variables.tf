@@ -107,6 +107,18 @@ variable "grpc" {
   sensitive = true
 }
 
+variable "grpc_connection" {
+  description = "gRPC connection"
+  type = object({
+    host = string
+    port = number
+  })
+  default = {
+    host = "casty-grpc.casty-grpc.svc.cluster.local"
+    port = 55283
+  }
+}
+
 variable "oauth_google_secret" {
   type = object({
     client_id = string

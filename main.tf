@@ -35,7 +35,7 @@ module "api" {
   hcaptcha_secret    = var.hcaptcha_secret
   tls                = var.tls
   cloudflare         = var.cloudflare
-  grpc               = var.grpc
+  grpc               = var.grpc_connection
   object_storage     = var.object_storage
   replica_count      = var.api.replica_count
   access_control_allow_origin = var.api.access_control_allow_origin
@@ -52,7 +52,7 @@ module "gateway" {
   replica_count          = var.gateway.replica_count
   debug                  = var.gateway.debug
   env                    = var.gateway.env
-  grpc                   = var.grpc
+  grpc                   = var.grpc_connection
   user_gateway_domain    = var.gateway.user_gateway_domain
   theater_gateway_domain = var.gateway.theater_gateway_domain
   ingress_controller     = var.ingress_controller
