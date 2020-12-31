@@ -3,26 +3,36 @@ resource "helm_release" "casty-grpc" {
   name        = "casty-grpc"
   respository = "https://github.com/CastyLab/helm-charts"
   chart       = "casty/casty-grpc"
-  values      = [file("${path.module}/resources/grpc_values.yaml")]
+  values      = [file("${path.module}/values.yaml")]
 
   set {
     name  = "appConfig.app.debug"
-    value = var.grpc.debug
+    value = var.debug
+  }
+  
+  set {
+    name = "image.repository"
+    value = var.image.repository
+  }
+  
+  set {
+    name = "image.pullPolicy"
+    value = var.image.pull_policy
   }
 
   set {
     name = "image.tag"
-    value = var.grpc.imageTag
+    value = var.image.tag
   }
   
   set {
     name  = "appConfig.app.env"
-    value = var.grpc.env
+    value = var.env
   }
 
   set {
     name  = "appConfig.secrets.sentry_dsn"
-    value = var.grpc.sentry_dsn
+    value = var.sentry_dsn
   }
 
   set {
@@ -41,31 +51,31 @@ resource "helm_release" "casty-grpc" {
   }
   set {
     name = "appConfig.secrets.db.host"
-    value = "casty-mongodb.casty-mongodb.svc.cluster.local"
+    value = var.mongodb.host
   }
   set {
     name = "appConfig.secrets.db.port"
-    value = 27017
+    value = var.mongodb.port
   }
   set {
     name = "appConfig.secrets.db.name"
-    value = "casty"
+    value = var.mongodb.database
   }
 
   // Redis configuration
   set {
     name  = "appConfig.secrets.redis.replicaset"
-    value = true
+    value = var.redis.replicaset
   }
   
   set {
     name  = "appConfig.secrets.redis.masterName"
-    value = var.redis.masterName
+    value = var.redis.master_name
   }
   
   set {
     name  = "appConfig.secrets.redis.sentinels[0]"
-    value = "casty-redis.casty-redis.svc.cluster.local:26379"
+    value = "${var.redis.host}:${var.redis.port}"
   }
   
   set {
@@ -81,12 +91,12 @@ resource "helm_release" "casty-grpc" {
   // JWT secrets
   set {
     name  = "appConfig.secrets.jwt.access_token_secret"
-    value = var.grpc.access_token_secret
+    value = var.access_token_secret
   }
 
   set {
     name  = "appConfig.secrets.jwt.refresh_token_secret"
-    value = var.grpc.refresh_token_secret
+    value = var.refresh_token_secret
   }
 
   // Spotify oauth Config
@@ -149,4 +159,5 @@ resource "helm_release" "casty-grpc" {
     name  = "appConfig.secrets.object_storage.secret_key"
     value = var.object_storage.secret_key
   }
+
 }

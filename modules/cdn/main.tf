@@ -3,60 +3,66 @@ resource "helm_release" "casty-cdn" {
   name        = "casty-cdn"
   respository = "https://github.com/CastyLab/helm-charts"
   chart       = "casty/casty-cdn"
-  values      = [file("${path.module}/resources/cdn_values.yaml")]
-
-  depends_on = [
-    helm_release.casty-api,
-  ]
+  values      = [file("${path.module}/values.yaml")]
 
   set {
     name  = "replicaCount"
-    value = 3
+    value = var.replica_count
+  }
+
+  set {
+    name = "image.repository"
+    value = var.image.repository
+  }
+  
+  set {
+    name = "image.pullPolicy"
+    value = var.image.pull_policy
   }
 
   set {
     name = "image.tag"
-    value = var.cdn.imageTag
+    value = var.image.tag
   }
   
   set {
     name  = "ingressController"
-    value = "nginx"
+    value = var.ingress_controller
   }
 
   set {
     name  = "tls.dnsNames[0]"
-    value = var.cdn.domain_name
+    value = var.domain_name
   }
 
   set {
     name  = "domainName"
-    value = var.cdn.domain_name
+    value = var.domain_name
   }
   
   set {
     name  = "appConfig.app.debug"
-    value = var.cdn.debug
+    value = var.debug
   }
 
   set {
     name  = "appConfig.app.env"
-    value = var.cdn.env
+    value = var.env
   }
 
   set {
     name  = "tls.enabled"
-    value = var.cdn.tls_enabled
+    value = var.tls.enabled
   }
 
   set {
     name  = "tls.caServer"
-    value = var.cdn.tls_caServer
+    value = var.tls.ca_server
   }
 
   set {
     name  = "tls.email"
-    value = var.tls_email
+    value = var.tls.email
   }
 
   set {
@@ -71,18 +77,13 @@ resource "helm_release" "casty-cdn" {
 
   set {
     name  = "appConfig.secrets.sentry_dsn"
-    value = var.cdn.sentry_dsn
+    value = var.sentry_dsn
   }
 
   set {
     name  = "appConfig.secrets.object_storage.endpoint"
     value = var.object_storage.endpoint
   }
-  
-  #set {
-    #name  = "appConfig.secrets.object_storage.region"
-    #value = var.object_storage.region
-  #}
 
   set {
     name  = "appConfig.secrets.object_storage.access_key"

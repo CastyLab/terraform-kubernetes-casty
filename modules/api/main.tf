@@ -3,55 +3,66 @@ resource "helm_release" "casty-api" {
   name        = "casty-api"
   respository = "https://github.com/CastyLab/helm-charts"
   chart       = "casty/casty-api"
-  values      = [file("${path.module}/resources/api_values.yaml")]
+  values      = [file("${path.module}/values.yaml")]
 
-  depends_on = [
-    helm_release.casty-grpc,
-  ]
+  set {
+    name  = "replicaCount"
+    value = var.replica_count
+  }
 
   set {
     name  = "ingressController"
-    value = "nginx"
+    value = var.ingress_controller
+  }
+
+  set {
+    name = "image.repository"
+    value = var.image.repository
+  }
+  
+  set {
+    name = "image.pullPolicy"
+    value = var.image.pull_policy
   }
 
   set {
     name = "image.tag"
-    value = var.api.imageTag
+    value = var.image.tag
   }
 
   set {
     name  = "tls.dnsNames[0]"
-    value = var.api.domain_name
+    value = var.domain_name
   }
 
   set {
     name  = "domainName"
-    value = var.api.domain_name
+    value = var.domain_name
   }
   
   set {
     name  = "appConfig.app.debug"
-    value = var.api.debug
+    value = var.debug
   }
 
   set {
     name  = "appConfig.app.env"
-    value = var.api.env
+    value = var.env
   }
 
   set {
     name  = "tls.enabled"
-    value = var.api.tls_enabled
+    value = var.tls.enabled
   }
 
   set {
     name  = "tls.caServer"
-    value = var.api.tls_caServer
+    value = var.tls.ca_server
   }
 
   set {
     name  = "tls.email"
-    value = var.tls_email
+    value = var.tls.email
   }
 
   set {
@@ -66,22 +77,22 @@ resource "helm_release" "casty-api" {
 
   set {
     name  = "appConfig.http.access_control_allow_origin"
-    value = var.api.access_control_allow_origin
+    value = var.access_control_allow_origin
   }
 
   set {
     name  = "appConfig.secrets.sentry_dsn"
-    value = var.api.sentry_dsn
+    value = var.sentry_dsn
   }
 
   set {
     name  = "appConfig.grpc.host"
-    value = "grpc.casty-grpc.svc.cluster.local"
+    value = var.grpc.host
   }
 
   set {
     name  = "appConfig.grpc.port"
-    value = 55283
+    value = var.grpc.port
   }
 
   set {
@@ -91,12 +102,7 @@ resource "helm_release" "casty-api" {
 
   set {
     name  = "apiDomainName"
-    value = var.api.domain_name
-  }
-
-  set {
-    name  = "cdn.persistence.storageClass"
-    value = var.storageClass
+    value = var.domain_name
   }
 
   set {
@@ -113,4 +119,5 @@ resource "helm_release" "casty-api" {
     name  = "appConfig.secrets.object_storage.secret_key"
     value = var.object_storage.secret_key
   }
+
 }

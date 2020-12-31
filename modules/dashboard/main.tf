@@ -3,42 +3,52 @@ resource "helm_release" "casty-dash" {
   name        = "casty-dash"
   respository = "https://github.com/CastyLab/helm-charts"
   chart       = "casty/casty-dash"
-  values      = [file("${path.module}/resources/dash_values.yaml")]
+  values      = [file("${path.module}/values.yaml")]
   timeout     = 600
 
-  depends_on = [
-    helm_release.casty-api,
-    helm_release.casty-gateway,
-  ]
+  set {
+    name  = "replicaCount"
+    value = var.replica_count
+  }
 
   set {
     name  = "ingressController"
-    value = var.ingressController
+    value = var.ingress_controller
+  }
+ 
+  set {
+    name = "image.repository"
+    value = var.image.repository
+  }
+  
+  set {
+    name = "image.pullPolicy"
+    value = var.image.pull_policy
   }
 
   set {
     name = "image.tag"
-    value = var.dashboard.imageTag
+    value = var.image.tag
   }
   
   set {
     name  = "domainName"
-    value = var.dashboard.domain_name
+    value = var.domain_name
   }
 
   set {
     name  = "tls.enabled"
-    value = var.dashboard.tls_enabled
+    value = var.tls.enabled
   }
 
   set {
     name  = "tls.caServer"
-    value = var.api.tls_caServer
+    value = var.tls.ca_server
   }
 
   set {
     name  = "tls.email"
-    value = var.tls_email
+    value = var.tls.email
   }
 
   set {
@@ -53,12 +63,12 @@ resource "helm_release" "casty-dash" {
 
   set {
     name  = "tls.dnsNames[0]"
-    value = var.dashboard.domain_name
+    value = var.domain_name
   }
 
   set {
     name  = "tls.dnsNames[1]"
-    value = "www.${var.dashboard.domain_name}"
+    value = "www.${var.domain_name}"
   }
   
 }

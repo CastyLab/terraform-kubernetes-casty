@@ -1,16 +1,6 @@
-variable "storageClass" {
-  type = string
-  description = "StorageClass name"
-}
-
-variable "ingressController" {
+variable "ingress_controller" {
   type = string
   description = "IngressController name"
-}
-
-variable "tls_email" {
-  type = string
-  description = "TLS email"
 }
 
 variable "hcaptcha_secret" {
@@ -30,27 +20,33 @@ variable "cloudflare" {
 
 variable "cdn" {
   type = object({
-    env = string
-    imageTag = string
-    debug = bool
-    domain_name = string
-    sentry_dsn = string
-    tls_enabled = bool
-    tls_caServer = string
+    replica_count     = number
+    env               = string
+    image_tag         = string
+    image_pull_policy = string
+    image_repository  = string
+    debug             = bool
+    domain_name       = string
+    sentry_dsn        = string
+    tls_enabled       = bool
+    tls_ca_server     = string
   })
   description = "CDN server Configurations"
 }
 
 variable "api" {
   type = object({
-    env = string
-    imageTag = string
-    debug = bool
-    domain_name = string
+    replica_count               = number
+    env                         = string
+    image_tag                   = string
+    image_pull_policy           = string
+    image_repository            = string
+    debug                       = bool
+    domain_name                 = string
     access_control_allow_origin = string
-    sentry_dsn = string
-    tls_enabled = bool
-    tls_caServer = string
+    sentry_dsn                  = string
+    tls_enabled                 = bool
+    tls_ca_server               = string
   })
   description = "ApiServer Configurations"
 }
@@ -67,35 +63,44 @@ variable "object_storage" {
 
 variable "dashboard" {
   type = object({
-    domain_name = string
-    imageTag = string
-    tls_enabled = bool
-    tls_caServer = string
+    replica_count     = number
+    domain_name       = string
+    image_tag         = string
+    image_pull_policy = string
+    image_repository  = string
+    tls_enabled       = bool
+    tls_ca_server     = string
   })
   description = "Dashboard Configurations"
 }
 
 variable "gateway" {
   type = object({
-    env = string
-    imageTag = string
-    debug = string
+    replica_count          = number
+    env                    = string
+    image_tag              = string
+    image_pull_policy      = string
+    image_repository       = string
+    debug                  = string
     user_gateway_domain    = string
     theater_gateway_domain = string
-    sentry_dsn = string
-    tls_enabled = bool
-    tls_caServer = string
+    sentry_dsn             = string
+    tls_enabled            = bool
+    tls_ca_server           = string
   })
   description = "GatewayServer Configurations"
 }
 
 variable "grpc" {
   type = object({
-    env = string
-    imageTag = string
-    debug = bool
-    sentry_dsn = string
-    access_token_secret = string
+    replica_count        = number
+    env                  = string
+    image_tag            = string
+    image_pull_policy    = string
+    image_repository     = string
+    debug                = bool
+    sentry_dsn           = string
+    access_token_secret  = string
     refresh_token_secret = string
   })
   description = "GrpcServer Configurations"
@@ -135,9 +140,11 @@ variable "oauth_discord_secret" {
 
 variable "redis" {
   type = object({
-    auth_enabled = bool
-    password = string
-    masterName = string
+    replicaset  = bool
+    host        = string
+    port        = number
+    password    = string
+    master_name = string
   })
   description = "Redis config"
   sensitive = true
@@ -145,8 +152,8 @@ variable "redis" {
 
 variable "mongodb" {
   type = object({
-    auth_enabled = bool
-    root_password = string
+    host     = string
+    port     = number
     username = string
     password = string
     database = string

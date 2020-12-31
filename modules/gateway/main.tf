@@ -3,61 +3,76 @@ resource "helm_release" "casty-gateway" {
   name        = "casty-gateway"
   respository = "https://github.com/CastyLab/helm-charts"
   chart       = "casty/casty-gateway"
-  values      = [file("${path.module}/resources/gateway_values.yaml")]
+  values      = [file("${path.module}/values.yaml")]
+
+  set {
+    name  = "replicaCount"
+    value = var.replica_count
+  }
 
   set {
     name  = "ingressController"
-    value = "nginx"
+    value = var.ingress_controller
   }
   
   set {
+    name = "image.repository"
+    value = var.image.repository
+  }
+  
+  set {
+    name = "image.pullPolicy"
+    value = var.image.pull_policy
+  }
+
+  set {
     name  = "image.tag"
-    value = var.gateway.imageTag
+    value = var.image.tag
   }
 
   set {
     name  = "userGatewayDomain"
-    value = var.gateway.user_gateway_domain
+    value = var.user_gateway_domain
   }
 
   set {
     name  = "theaterGatewayDomain"
-    value = var.gateway.theater_gateway_domain
+    value = var.theater_gateway_domain
   }
 
   set {
     name  = "tls.dnsNames[0]"
-    value = var.gateway.user_gateway_domain
+    value = var.user_gateway_domain
   }
 
   set {
     name  = "tls.dnsNames[1]"
-    value = var.gateway.theater_gateway_domain
+    value = var.theater_gateway_domain
   }
 
   set {
     name  = "appConfig.app.debug"
-    value = var.gateway.debug
+    value = var.debug
   }
 
   set {
     name  = "appConfig.app.env"
-    value = var.gateway.env
+    value = var.env
   }
 
   set {
     name  = "tls.enabled"
-    value = var.gateway.tls_enabled
+    value = var.tls.enabled
   }
 
   set {
     name  = "tls.caServer"
-    value = var.gateway.tls_caServer
+    value = var.tls.ca_server
   }
 
   set {
     name  = "tls.email"
-    value = var.tls_email
+    value = var.tls.email
   }
 
   set {
@@ -72,33 +87,33 @@ resource "helm_release" "casty-gateway" {
 
   set {
     name  = "appConfig.secrets.sentry_dsn"
-    value = var.gateway.sentry_dsn
+    value = var.sentry_dsn
   }
 
   // Redis configuration
   set {
     name  = "appConfig.secrets.redis.replicaset"
-    value = true
+    value = var.redis.replicaset
   }
   
   set {
     name  = "appConfig.secrets.redis.masterName"
-    value = var.redis.masterName
+    value = var.redis.master_name
   }
 
   set {
     name  = "appConfig.secrets.redis.sentinels[0]"
-    value = "casty-redis.casty-redis.svc.cluster.local:26379"
+    value = "${var.redis.host}:${var.redis.port}"
   }
 
   set {
     name  = "appConfig.grpc.host"
-    value = "grpc.casty-grpc.svc.cluster.local"
+    value = var.grpc.host
   }
 
   set {
     name  = "appConfig.grpc.port"
-    value = 55283
+    value = var.grpc.port
   }
 
   set {
